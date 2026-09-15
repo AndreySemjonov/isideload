@@ -2,7 +2,7 @@ name: Watch RSD validation
 on:
   workflow_dispatch:
   push:
-    branches: ['codex/validate-watch-rsd']
+    branches: ['ci/watch-rsd-validation']
 permissions:
   contents: read
 jobs:
@@ -13,5 +13,11 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
       - run: sudo apt-get update && sudo apt-get install -y pkg-config libdbus-1-dev
-      - run: cargo check --locked -p isideload
+      - run: cargo check -p isideload
       - run: cargo test --locked -p isideload --lib
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: resolved-cargo-lock
+          path: Cargo.lock
